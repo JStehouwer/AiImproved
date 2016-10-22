@@ -7,9 +7,9 @@ using System.IO;
 
 namespace AiImproved
 {
-    class Board
+    public class Board
     {
-        String[] board;
+        private String[] board;
 
         public Board()
         {
@@ -20,16 +20,14 @@ namespace AiImproved
         {
             board = new String[42];
             StreamWriter blah = new StreamWriter("blah.txt");
-            blah.WriteLine("Reading the board state");
             board = boardState;
-            blah.WriteLine(board.ToString());
-            //for (int i = 0; i < 42; i++)
-            //{
-            //    blah.WriteLine(i.ToString() + " " + boardState[i].ToString());
-            //    board[i] = boardState[i].ToString();
-            //}
-            blah.WriteLine("Finished reading the board state");
+            blah.WriteLine(String.Join("", board));
             blah.Close();
+        }
+
+        public String[] BoardArray
+        {
+            get { return board; }
         }
     }
 }

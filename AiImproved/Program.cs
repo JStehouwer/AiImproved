@@ -10,7 +10,7 @@ namespace AiImproved
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             //var input = System.IO.File.ReadAllText(@"input.json");
             //var boardstring = System.Text.RegularExpressions.Regex.Match(input, @"\{.*\}").Value;
@@ -35,12 +35,22 @@ namespace AiImproved
                         break;
                 }
             }
+
+            //Write to file
             rawr.WriteLine(boardString);
             rawr.WriteLine(playerString);
             rawr.WriteLine(timeString);
+            Board board = new Board(boardString.Trim(new char[] {'[', ']'}).Split(','));
             rawr.Close();
-            AiImprovedPlayer player = new AiImprovedPlayer();
-            Board board = new Board(boardString.Split(new char[] {',', '[', ']'}));
+
+            for (int i = 0; i < 7; i++) 
+            {
+                if (board.BoardArray[i] == "0") 
+                {
+                    return i;
+                }
+            }
+            return 0;
         }
     }
 }
