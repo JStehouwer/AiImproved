@@ -14,6 +14,7 @@ namespace AiImproved
         public Board(String[] boardState)
         {
             board = new String[42];
+            board = boardState;
         }
 
         public Board move(int position, String player)

@@ -5,17 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace AiImproved
 {
     class Program
     {
-        public static String playerString;
-        public static String opponentString;
-
         static int Main(string[] args)
         {
             String boardString = "";
+            String playerString = "";
             int timeAllowed = 0;
             for (int i = 0; i < args.Length; i++)
             {
@@ -26,7 +25,6 @@ namespace AiImproved
                         break;
                     case "-p":
                         playerString = (args[i + 1] == "player-one") ? "1" : "2";
-                        opponentString = (args[i + 1] == "player-one") ? "2" : "1";
                         break;
                     case "-t":
                         timeAllowed = Int32.Parse(args[i + 1]);
@@ -35,32 +33,39 @@ namespace AiImproved
                         break;
                 }
             }
-            Board board = new Board(boardString.Trim(new char[] {'[', ']'}).Split(','));
+            boardString = Regex.Replace(boardString, @"[\[\]]", "");
+            Board board = new Board(boardString.Split(','));
 
+            return minMax(board, playerString, 8).Move;
+        }
+
+        public static Result minMax(Board board, String player, int depth)
+        {
+            int bestValue = 0;
             // Check for valid moves
             bool[] validMoves = new bool[7];
-            for (int i = 0; i < 7; i++) 
+            for (int i = 0; i < 7; i++)
             {
                 validMoves[i] = board.BoardArray[i] == "0";
             }
 
-            return minMax(board, playerString, 8, validMoves).Move;
-        }
-
-        public static Result minMax(Board board, String player, int depth, bool[] validMoves)
-        {
-            int bestValue = 0;
+            String opponent = (player == "1") ? "2" : "1";
+            int winMove = checkForWin(board, player, opponent, validMoves);
+            if (winMove != -1)
+            {
+                return new Result(winMove, 100000);
+            }
+            else
+            {
+                int loseMove = checkForWin(board, opponent, player, validMoves);
+                if (loseMove != -1)
+                {
+                    return new Result(loseMove, -1000000);
+                }
+            }
             if (depth == 0)
             {
-                int winMove = checkForWin(board, validMoves);
-                if (winMove != -1)
-                {
-                    return new Result(winMove, 100000);
-                }
-                else
-                {
-                    //return new Result(0, evaluate(board, player));
-                }
+                //return new Result(0, evaluate(board, player));
             }
 
             bool max = true;
@@ -73,7 +78,6 @@ namespace AiImproved
                 bestValue = 1000000;
                 max = false;
             }
-            String opponent = (player == "1") ? "2" : "1";
 
             int bestMove = 0;
             for (int i = 0; i < 7; i++)
@@ -81,6 +85,7 @@ namespace AiImproved
                 if (validMoves[i])
                 {
                     bestMove = i;
+                    break;
                 }
             }
 
@@ -89,7 +94,7 @@ namespace AiImproved
                 if (validMoves[i])
                 {
                     Board b1 = board.move(i, player);
-                    int value = minMax(b1, player, depth - 1, validMoves).Value;
+                    int value = minMax(b1, opponent, depth - 1).Value;
                     if ((value > bestValue && max) || (value < bestValue && !max))
                     {
                         bestValue = value;
@@ -105,7 +110,7 @@ namespace AiImproved
             return 0;
         }
 
-        public static int checkForWin(Board board, bool[] validMoves)
+        public static int checkForWin(Board board, String playerString, String opponentString, bool[] validMoves)
         {
             for (int i = 41; i > 20; i--)
             {
@@ -125,7 +130,7 @@ namespace AiImproved
 
                     for (int j = 0; j < 4; j++)
                     {
-                        count[j] += (board.BoardArray[i - j] == playerString) ? 1 : 0;
+                        count[j] = (board.BoardArray[i - j] == playerString) ? 1 : 0;
                     }
 
                     if (count.Sum() == 2)
@@ -134,7 +139,7 @@ namespace AiImproved
                     }
 
                     //Diagonal Left
-                    if (i % 7 < 4)
+                    if ((i % 7) > 2)
                     {
                         if (board.BoardArray[i - 8] == opponentString || board.BoardArray[i - 16] == opponentString || board.BoardArray[i - 24] == opponentString)
                         {
@@ -144,7 +149,7 @@ namespace AiImproved
 
                         for (int j = 0; j < 25; j += 8)
                         {
-                            count[j] += (board.BoardArray[i - j] == playerString) ? 1 : 0;
+                            count[j/8] = (board.BoardArray[i - j] == playerString) ? 1 : 0;
                         }
 
                         if (count.Sum() == 2 && board.BoardArray[i + 7 - (Array.IndexOf(count, "0") * 8)] != "0")
@@ -154,7 +159,7 @@ namespace AiImproved
                     }
 
                     //Diagonal Right
-                    if (i % 7 > 2)
+                    if ((i % 7) < 4)
                     {
                         if (board.BoardArray[i - 6] == opponentString || board.BoardArray[i - 12] == opponentString || board.BoardArray[i - 18] == opponentString)
                         {
@@ -164,7 +169,7 @@ namespace AiImproved
 
                         for (int j = 0; j < 4; j++)
                         {
-                            count[j] += (board.BoardArray[i - j] == playerString) ? 1 : 0;
+                            count[j/8] = (board.BoardArray[i - j] == playerString) ? 1 : 0;
                         }
 
                         if (count.Sum() == 2 && board.BoardArray[i + 7 - (Array.IndexOf(count, "0") * 6)] != "0")
