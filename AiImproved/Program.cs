@@ -44,7 +44,7 @@ namespace AiImproved
                 validMoves[i] = board.BoardArray[i] == "0";
             }
 
-            return minMax(board, playerString, 5, validMoves).Move;
+            return minMax(board, playerString, 8, validMoves).Move;
         }
 
         public static Result minMax(Board board, String player, int depth, bool[] validMoves)
