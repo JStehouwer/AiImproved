@@ -11,18 +11,22 @@ namespace AiImproved
     {
         private String[] board;
 
-        public Board()
+        public Board(String[] boardState)
         {
             board = new String[42];
         }
 
-        public Board(String[] boardState)
+        public Board move(int position, String player)
         {
-            board = new String[42];
-            StreamWriter blah = new StreamWriter("blah.txt");
-            board = boardState;
-            blah.WriteLine(String.Join("", board));
-            blah.Close();
+            String[] b = board;
+            for (int i = 5; i > -1; i--)
+            {
+                if (b[(i * 7) + position] == "0")
+                {
+                    b[(i * 7) + position] = player;
+                }
+            }
+            return new Board(b);
         }
 
         public String[] BoardArray

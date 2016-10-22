@@ -59,7 +59,7 @@ namespace AiImproved
                 }
                 else
                 {
-                    return new Result(0, evaluate(board, player));
+                    //return new Result(0, evaluate(board, player));
                 }
             }
 
@@ -76,6 +76,13 @@ namespace AiImproved
             String opponent = (player == "1") ? "2" : "1";
 
             int bestMove = 0;
+            for (int i = 0; i < 7; i++)
+            {
+                if (validMoves[i])
+                {
+                    bestMove = i;
+                }
+            }
 
             for (int i = 0; i < 7; i++)
             {
@@ -83,18 +90,19 @@ namespace AiImproved
                 {
                     Board b1 = board.move(i, player);
                     int value = minMax(b1, player, depth - 1, validMoves).Value;
-                    if ((value > bestValue && max) || (value < bestVal && !max))
+                    if ((value > bestValue && max) || (value < bestValue && !max))
                     {
                         bestValue = value;
                         bestMove = i;
                     }
                 }
             }
+            return new Result(bestMove, bestValue);
         }
 
         public static int evaluate(Board board, String player)
         {
-
+            return 0;
         }
 
         public static int checkForWin(Board board, bool[] validMoves)
