@@ -36,7 +36,29 @@ namespace AiImproved
             boardString = Regex.Replace(boardString, @"[\[\]]", "");
             Board board = new Board(boardString.Split(','));
 
-            return minMax(board, playerString, 8).Move;
+            bool[] validMoves = new bool[7];
+            for(int i = 0; i < 7; i++)
+            {
+                validMoves[i] = board.BoardArray[i] == "0";
+            }
+
+            int move = minMax(board, playerString, 15).Move;
+            if (!((move < 7 && move > -1) && validMoves[move]))
+            {
+                while (true)
+                {
+                    Random rand = new Random();
+                    move = rand.Next(0, 7);
+                    if ((move < 7 && move > -1) && validMoves[move])
+                    {
+                        return move;
+                    }
+                }
+            }
+            else
+            {
+                return move;
+            }
         }
 
         public static Result minMax(Board board, String player, int depth)
@@ -135,7 +157,7 @@ namespace AiImproved
 
                     if (count.Sum() == 2)
                     {
-                        return (i % 7) - (4 - Array.IndexOf(count, "0"));
+                        return (i - Array.IndexOf(count, "0")) % 7;
                     }
 
                     //Diagonal Left
@@ -154,7 +176,7 @@ namespace AiImproved
 
                         if (count.Sum() == 2 && board.BoardArray[i + 7 - (Array.IndexOf(count, "0") * 8)] != "0")
                         {
-                            return Array.IndexOf(count, "0");
+                            return ((i - Array.IndexOf(count, "0")) * 8) % 7;
                         }
                     }
 
@@ -174,7 +196,7 @@ namespace AiImproved
 
                         if (count.Sum() == 2 && board.BoardArray[i + 7 - (Array.IndexOf(count, "0") * 6)] != "0")
                         {
-                            return Array.IndexOf(count, "0");
+                            return ((i - Array.IndexOf(count, "0")) * 6) % 7;
                         }
                     }
                 }
