@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace AiImproved
 {
@@ -12,16 +13,23 @@ namespace AiImproved
 
         public Board()
         {
-
+            board = new String[42];
         }
 
-        public Board(String json)
+        public Board(String[] boardState)
         {
-            Console.Write(json);
-            for (int i = 0; i < 42; i++)
-            {
-                board[i] = json[i].ToString();
-            }
+            board = new String[42];
+            StreamWriter blah = new StreamWriter("blah.txt");
+            blah.WriteLine("Reading the board state");
+            board = boardState;
+            blah.WriteLine(board.ToString());
+            //for (int i = 0; i < 42; i++)
+            //{
+            //    blah.WriteLine(i.ToString() + " " + boardState[i].ToString());
+            //    board[i] = boardState[i].ToString();
+            //}
+            blah.WriteLine("Finished reading the board state");
+            blah.Close();
         }
     }
 }

@@ -1,2 +1,5 @@
 AiImproved/obj/Debug/*
 connect-four.jar
+
+AiImproved/bin/Debug/input.json
+*.txt
