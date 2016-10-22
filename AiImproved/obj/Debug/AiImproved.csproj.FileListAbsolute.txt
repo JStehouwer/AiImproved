@@ -1,1 +1,8 @@
 c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\bin\Debug\AiImproved.exe.config
+c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\obj\Debug\AiImproved.csprojResolveAssemblyReference.cache
+c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\bin\Debug\AiImproved.exe
+c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\bin\Debug\AiImproved.pdb
+c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\bin\Debug\Newtonsoft.Json.dll
+c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\bin\Debug\Newtonsoft.Json.xml
+c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\obj\Debug\AiImproved.exe
+c:\users\jstay\documents\visual studio 2013\Projects\AiImproved\AiImproved\obj\Debug\AiImproved.pdb
