@@ -15,9 +15,6 @@ namespace AiImproved
 
         static int Main(string[] args)
         {
-            //var input = System.IO.File.ReadAllText(@"input.json");
-            //var boardstring = System.Text.RegularExpressions.Regex.Match(input, @"\{.*\}").Value;
-            StreamWriter rawr = new StreamWriter("rawr.txt");
             String boardString = "";
             int timeAllowed = 0;
             for (int i = 0; i < args.Length; i++)
@@ -38,13 +35,7 @@ namespace AiImproved
                         break;
                 }
             }
-
-            //Write to file
-            rawr.WriteLine(boardString);
-            rawr.WriteLine(playerString);
-            rawr.WriteLine(timeAllowed.ToString());
             Board board = new Board(boardString.Trim(new char[] {'[', ']'}).Split(','));
-            rawr.Close();
 
             // Check for valid moves
             bool[] validMoves = new bool[7];
@@ -53,17 +44,60 @@ namespace AiImproved
                 validMoves[i] = board.BoardArray[i] == "0";
             }
 
-            return 0;
+            return minMax(board, playerString, 5, validMoves).Move;
         }
 
-        public Result minimaxSearch(Board board, bool[] validMoves) 
+        public static Result minMax(Board board, String player, int depth, bool[] validMoves)
         {
-            int bestVal = 0;
+            int bestValue = 0;
+            if (depth == 0)
+            {
+                int winMove = checkForWin(board, validMoves);
+                if (winMove != -1)
+                {
+                    return new Result(winMove, 100000);
+                }
+                else
+                {
+                    return new Result(0, evaluate(board, player));
+                }
+            }
 
-            return checkForWin(board, validMoves);
+            bool max = true;
+            if (player == "1")
+            {
+                bestValue = -100000;
+            }
+            else
+            {
+                bestValue = 1000000;
+                max = false;
+            }
+            String opponent = (player == "1") ? "2" : "1";
+
+            int bestMove = 0;
+
+            for (int i = 0; i < 7; i++)
+            {
+                if (validMoves[i])
+                {
+                    Board b1 = board.move(i, player);
+                    int value = minMax(b1, player, depth - 1, validMoves).Value;
+                    if ((value > bestValue && max) || (value < bestVal && !max))
+                    {
+                        bestValue = value;
+                        bestMove = i;
+                    }
+                }
+            }
         }
 
-        public int checkForWin(Board board, bool[] validMoves)
+        public static int evaluate(Board board, String player)
+        {
+
+        }
+
+        public static int checkForWin(Board board, bool[] validMoves)
         {
             for (int i = 41; i > 20; i--)
             {
@@ -105,7 +139,7 @@ namespace AiImproved
                             count[j] += (board.BoardArray[i - j] == playerString) ? 1 : 0;
                         }
 
-                        if (count.Sum() == 2)
+                        if (count.Sum() == 2 && board.BoardArray[i + 7 - (Array.IndexOf(count, "0") * 8)] != "0")
                         {
                             return Array.IndexOf(count, "0");
                         }
@@ -125,7 +159,7 @@ namespace AiImproved
                             count[j] += (board.BoardArray[i - j] == playerString) ? 1 : 0;
                         }
 
-                        if (count.Sum() == 2)
+                        if (count.Sum() == 2 && board.BoardArray[i + 7 - (Array.IndexOf(count, "0") * 6)] != "0")
                         {
                             return Array.IndexOf(count, "0");
                         }
